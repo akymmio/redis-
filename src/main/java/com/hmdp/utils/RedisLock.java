@@ -19,7 +19,7 @@ public class RedisLock implements ILock{
     private static final String KEY_PREFIX="lock:";
     private final String ID_PREFIX= UUID.randomUUID().toString(true)+'-';
 
-    //加载脚本
+    //加载lua脚本
     private static final DefaultRedisScript<Long> UNLOCK_SCRIPT;
     static{
         UNLOCK_SCRIPT=new DefaultRedisScript<>();
@@ -53,7 +53,7 @@ public class RedisLock implements ILock{
     }*/
     @Override
    public void unclock() {
-       //调用lua
+       //调用lua脚本
        stringRedisTemplate.execute(UNLOCK_SCRIPT
                ,Collections.singletonList(KEY_PREFIX + lockName)
                ,Thread.currentThread().getId()

@@ -34,8 +34,9 @@ public class RedisConstants {
     public static final Long CACHE_SHOP_TTL=30L;//cache的有效时间
     public static final Long CACHE_NULL_TTL=30L;//空值的有效时间
     public static final String LIST_SHOP_KEY="list:shop:";
-    public static final String LOCK_SHOP_KEY="lock:shop";//店铺锁
+    public static final String LOCK_SHOP_KEY="lock:shop:";//店铺锁
     public static final String LOCK_SHOP_TTL="lock:shop";//店铺锁ttl
+    public static final String SECKILL_STOCK_KEY="seckill:stock:";//店铺锁ttl
 
 
 }
