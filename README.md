@@ -1,2 +1,2 @@
 # redis-
-一个redis项目
+通过学习和使用redis，优化项目
