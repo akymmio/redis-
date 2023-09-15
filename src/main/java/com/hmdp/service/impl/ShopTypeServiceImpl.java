@@ -51,7 +51,7 @@ public class ShopTypeServiceImpl extends ServiceImpl<ShopTypeMapper, ShopType> i
         List<ShopType> shopList=query().orderByAsc("sort").list();
         //不存在
         if(CollectionUtils.isEmpty(shopList)){
-            return Result.fail("店铺不存在");
+            return Result.fail("");
         }
         //存在，写入redis
         stringRedisTemplate.opsForValue().set(LIST_SHOP_KEY,JSONUtil.toJsonStr(shopList));

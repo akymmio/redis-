@@ -137,7 +137,7 @@ public class CacheUtils {
         }
         //命中，将data反序列化为对象
         RedisData redisData = JSONUtil.toBean(shopJson, RedisData.class);
-        R r = JSONUtil.toBean((JSONObject) redisData.getData(), type); //?
+        R r = JSONUtil.toBean((JSONObject)redisData.getData(), type); //?
         LocalDateTime expireTime = redisData.getExpireTime();
 
         //判断expire字段是否过期

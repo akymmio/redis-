@@ -52,7 +52,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         //Shop shop = queryWithMutex(id);
 
         //逻辑过期解决缓存击穿
-        Shop shop =cacheUtils.queryWithlogicalExpire(id, CACHE_SHOP_KEY, Shop.class, this::getById, 20L, TimeUnit.SECONDS);
+        Shop shop =cacheUtils.queryWithlogicalExpire(id, CACHE_SHOP_KEY, Shop.class, this::getById, CACHE_SHOP_TTL, TimeUnit.SECONDS);
 
         //Shop shop=queryWithlogicalExpire(id);
         if (shop == null) return Result.fail("店铺不存在");
@@ -162,7 +162,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     private void unlock(String key) {
         stringRedisTemplate.delete(key);
     }*/
-    public void saveShopToRedis(Long id, Long expireSeconds) throws InterruptedException {
+/*    public void saveShopToRedis(Long id, Long expireSeconds) throws InterruptedException {
         //查询
         Shop shop = getById(id);
         Thread.sleep(200);
@@ -172,8 +172,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         redisData.setExpireTime(LocalDateTime.now().plusSeconds(expireSeconds));
         //写入redis
         stringRedisTemplate.opsForValue().set(CACHE_SHOP_KEY + id, JSONUtil.toJsonStr(redisData));
-    }
-
+    }*/
 
     /**
      * @param shop
