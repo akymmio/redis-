@@ -37,6 +37,9 @@ public class RedisConstants {
     public static final String LOCK_SHOP_KEY="lock:shop:";//店铺锁
     public static final String LOCK_SHOP_TTL="lock:shop";//店铺锁ttl
     public static final String SECKILL_STOCK_KEY="seckill:stock:";//店铺锁ttl
+    public static final String BLOG_LIKED_KEY="blog:liked:";//点赞
+
+
 
 
 }
