@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hmdp.dto.Result;
 import com.hmdp.dto.UserDTO;
 import com.hmdp.entity.Blog;
+import com.hmdp.entity.Follow;
 import com.hmdp.entity.User;
 import com.hmdp.mapper.BlogMapper;
 import com.hmdp.service.IBlogService;
@@ -41,6 +42,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    @Resource
+    private FollowServiceImpl followService;
 
     @Override
     public Result queryHotBlog(Integer current) {
@@ -121,14 +125,42 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         //查询前五名点赞用户
         Set<String> set = stringRedisTemplate.opsForZSet().range(key, 0, 4);
         if(set==null || set.isEmpty()) return Result.success(Collections.emptyList());
-        //查询用户
+        //解析id，String->Long
         List<Long> ids = set.stream().map(Long::valueOf).collect(Collectors.toList());
+        //查询用户
         List<User> list = userService.query().in("id", ids).last("order by id desc").list();
+        //转化，User->UserDTO
         List<UserDTO> userDTOs = list.stream()
                 .map(user -> BeanUtil.copyProperties(user, UserDTO.class))
                 .collect(Collectors.toList());
 
         return Result.success(userDTOs);
+    }
+
+    /**
+     * 保存博客，同时推送给粉丝
+     * @param blog
+     * @return
+     */
+    @Override
+    public Result saveBlog(Blog blog) {
+        // 获取登录用户
+        UserDTO user = UserHolder.getUser();
+        blog.setUserId(user.getId());
+        // 保存探店博文
+        boolean save = save(blog);
+        if(!save) return Result.fail("新增笔记失败");
+        //推送blog给粉丝
+        List<Follow> followUsers= followService.query().eq("follow_user_id", user.getId()).list();
+        for(Follow f:followUsers){
+            //获取粉丝的id
+            Long userId = f.getUserId();
+            //推送到粉丝的收件箱
+            String key="follow:box:"+userId;
+            stringRedisTemplate.opsForZSet().add(key,blog.getId().toString(),System.currentTimeMillis());
+        }
+        // 返回id
+        return Result.success(blog.getId());
     }
 
     /**

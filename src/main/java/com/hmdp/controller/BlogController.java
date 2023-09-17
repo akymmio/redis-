@@ -1,19 +1,22 @@
 package com.hmdp.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hmdp.dto.Result;
 import com.hmdp.dto.UserDTO;
 import com.hmdp.entity.Blog;
-import com.hmdp.entity.User;
+
 import com.hmdp.service.IBlogService;
-import com.hmdp.service.IUserService;
+
 import com.hmdp.utils.SystemConstants;
 import com.hmdp.utils.UserHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.hmdp.utils.SystemConstants.MAX_PAGE_SIZE;
 
 /**
  * <p>
@@ -32,13 +35,7 @@ public class BlogController {
 
     @PostMapping
     public Result saveBlog(@RequestBody Blog blog) {
-        // 获取登录用户
-        UserDTO user = UserHolder.getUser();
-        blog.setUserId(user.getId());
-        // 保存探店博文
-        blogService.save(blog);
-        // 返回id
-        return Result.success(blog.getId());
+        return blogService.saveBlog(blog);
     }
 
     @PutMapping("/like/{id}")
@@ -53,8 +50,7 @@ public class BlogController {
         // 获取登录用户
         UserDTO user = UserHolder.getUser();
         // 根据用户查询
-        Page<Blog> page = blogService.query()
-                .eq("user_id", user.getId()).page(new Page<>(current, SystemConstants.MAX_PAGE_SIZE));
+        Page<Blog> page = blogService.query().eq("user_id", user.getId()).page(new Page<>(current, MAX_PAGE_SIZE));
         // 获取当前页数据
         List<Blog> records = page.getRecords();
         return Result.success(records);
@@ -64,12 +60,31 @@ public class BlogController {
     public Result queryHotBlog(@RequestParam(value = "current", defaultValue = "1") Integer current) {
         return blogService.queryHotBlog(current);
     }
+
     @GetMapping("/{id}")
-    public Result queryBlogById(@PathVariable("id") Long id){
+    public Result queryBlogById(@PathVariable("id") Long id) {
         return blogService.queryBlogById(id);
     }
+
     @GetMapping("/likes/{id}")
-    public Result queryBlogLikes(@PathVariable("id") Long id){
+    public Result queryBlogLikes(@PathVariable("id") Long id) {
         return blogService.queryBlogLikes(id);
+    }
+
+    /**
+     * 查询用户的blog
+     */
+    @GetMapping("/of/user")
+    public Result queryBlogById(@RequestParam(value = "current", defaultValue = "1") Integer current, @RequestParam("id") Long id) {
+/*        LambdaQueryWrapper<Blog> qw=new LambdaQueryWrapper<>();
+        qw.eq(Blog::getId,id);
+        Page<Blog> p = new Page<>(current,MAX_PAGE_SIZE);
+        blogService.page(p,qw);
+        return Result.success(p.getRecords());*/
+        // 根据用户查询
+        Page<Blog> page = blogService.query().eq("user_id", id).page(new Page<>(current, SystemConstants.MAX_PAGE_SIZE));
+        // 获取当前页数据
+        List<Blog> records = page.getRecords();
+        return Result.success(records);
     }
 }
