@@ -123,10 +123,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         if(set==null || set.isEmpty()) return Result.success(Collections.emptyList());
         //查询用户
         List<Long> ids = set.stream().map(Long::valueOf).collect(Collectors.toList());
-        List<UserDTO> userDTOs= userService.query().in("id",ids).last("order by id desc").list()
-                .stream()
-                .map(user -> BeanUtil.copyProperties(user, UserDTO.class)
-                )
+        List<User> list = userService.query().in("id", ids).last("order by id desc").list();
+        List<UserDTO> userDTOs = list.stream()
+                .map(user -> BeanUtil.copyProperties(user, UserDTO.class))
                 .collect(Collectors.toList());
 
         return Result.success(userDTOs);

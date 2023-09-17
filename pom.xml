@@ -67,6 +67,10 @@
             <artifactId>redisson</artifactId>
             <version>3.13.6</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
