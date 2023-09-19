@@ -19,12 +19,7 @@ import java.util.List;
 import static com.hmdp.utils.SystemConstants.MAX_PAGE_SIZE;
 
 /**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
+ * 博客
  */
 @RestController
 @RequestMapping("/blog")

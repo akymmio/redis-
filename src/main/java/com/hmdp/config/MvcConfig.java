@@ -9,6 +9,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.Resource;
 
+/**
+ * 拦截器
+ */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
@@ -16,7 +19,7 @@ public class MvcConfig implements WebMvcConfigurer {
     private StringRedisTemplate stringRedisTemplate;
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        //刷新拦截器
+        //拦截器，刷新token时间
         registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).order(0);
 
         //登录拦截器

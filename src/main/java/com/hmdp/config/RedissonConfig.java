@@ -6,9 +6,11 @@ import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * redisson配置类
+ */
 @Configuration
 public class RedissonConfig {
-
     @Bean
     public RedissonClient redissonClient(){
         Config config = new Config();

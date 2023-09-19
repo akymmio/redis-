@@ -14,6 +14,9 @@ import java.util.UUID;
 
 import static cn.hutool.core.lang.Console.log;
 
+/**
+ * 文件上传
+ */
 @RestController
 @RequestMapping("upload")
 public class UploadController {

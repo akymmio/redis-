@@ -154,11 +154,13 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         Boolean b = stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 10, TimeUnit.SECONDS);//setnx
         return BooleanUtil.isTrue(b);//防止拆箱，空指针异常
     }
-    *//**
+    */
+    /**
      * 释放锁
      *
      * @param key
-     *//*
+     */
+    /*
     private void unlock(String key) {
         stringRedisTemplate.delete(key);
     }*/

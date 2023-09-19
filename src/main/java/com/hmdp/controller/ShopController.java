@@ -12,12 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
+ * 商店
  */
 @RestController
 @RequestMapping("/shop")
@@ -33,7 +28,6 @@ public class ShopController {
      */
     @GetMapping("/{id}")
     public Result queryShopById(@PathVariable("id") Long id) throws InterruptedException {
-        /*        return Result.success(shopService.getById(id));*/
         return shopService.queryById(id);
 
     }

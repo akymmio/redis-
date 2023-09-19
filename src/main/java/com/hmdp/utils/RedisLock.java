@@ -40,17 +40,6 @@ public class RedisLock implements ILock{
         return Boolean.TRUE.equals(res);//空指针拆箱，要防止指针为空
     }
 
-   /* @Override
-    public void unclock() {
-        //获取线程标识
-        String threadId =ID_PREFIX+String.valueOf(Thread.currentThread().getId());
-        //获取锁标识
-        String lockId = stringRedisTemplate.opsForValue().get(KEY_PREFIX + lockName);
-        //判断是否一致
-        if(threadId.equals(lockId)){
-            stringRedisTemplate.delete(KEY_PREFIX + lockName);
-        }
-    }*/
     @Override
    public void unclock() {
        //调用lua脚本

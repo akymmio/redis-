@@ -34,7 +34,6 @@ class HmDianPingApplicationTests {
         Shop shop = shopService.getById(1L);
         cacheUtils.setLogicalExpire(CACHE_SHOP_KEY + 1L, shop, 20L, TimeUnit.SECONDS);
     }
-
     /**
      *测试id生成
      */

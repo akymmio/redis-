@@ -49,15 +49,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private StringRedisTemplate stringRedisTemplate;
 
     public Result sendCode(String phone, HttpSession session) {
-        // TODO 发送短信验证码并保存验证码
+        //发送短信验证码并保存验证码
         //校验手机号
         if(RegexUtils.isPhoneInvalid(phone)){
             return Result.fail("手机号格式错误");
         }
         //生成验证码
         String code= RandomUtil.randomNumbers(6);
-        //保存验证码到session
-        //session.setAttribute(CODE_FIELD,code);
 
         //保存验证码到redis
         stringRedisTemplate.opsForValue().set(LOGIN_CODE_PREFIX+phone,code,LOGIN_CODE_TTL, TimeUnit.MINUTES);//设置验证码时效为2分钟
@@ -66,32 +64,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         return Result.success();
     }
-
-/*    @Override
-    public Result login(LoginFormDTO loginForm, HttpSession session) {
-        String phone=loginForm.getPhone();
-        //校验手机号，请求是独立的，获取和登录的手机号可能不同
-        if(RegexUtils.isPhoneInvalid(phone)){
-            return Result.fail("手机号格式错误");
-        }
-        //校验验证码
-        String code =(String)session.getAttribute(CODE_FIELD);
-        String loginCode = loginForm.getCode();
-        if(loginCode==null || !loginCode.equals(code)){
-            return Result.fail("验证码错误");
-        }
-        //校验成功后，查表
-        User user = query().eq("phone", phone).one();
-        if(user==null){
-            //不存在，创建新用户
-            user=creteUserByPhone(phone);
-
-        }
-        //保存用户信息到session中
-        session.setAttribute("user", BeanUtil.copyProperties(user, UserDTO.class));
-
-        return Result.success();
-    }*/
 
     @Override
     public Result login(LoginFormDTO loginForm, HttpSession session) {
@@ -114,7 +86,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         //生成token令牌，将user对象转为hashMap存储
         String token = UUID.randomUUID().toString();
-        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class); //DTO（数据传输对象）数据模型转换
+        //DTO（数据传输对象）数据模型转换
+        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
+        //？
         Map<String, Object> userMap = BeanUtil.beanToMap(userDTO,new HashMap<>(), CopyOptions.create()
                 .setFieldValueEditor((fieldName,fieldValue)->fieldValue.toString()));
         //存入redis
@@ -136,10 +110,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return user;
     }
 
-    /**
-     * 签到统计
-     * @return
-     */
     @Override
     public Result userSign() {
         UserDTO user = UserHolder.getUser();
