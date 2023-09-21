@@ -7,6 +7,7 @@ import com.hmdp.dto.Result;
 import com.hmdp.dto.UserDTO;
 import com.hmdp.entity.Blog;
 
+import com.hmdp.entity.User;
 import com.hmdp.service.IBlogService;
 
 import com.hmdp.utils.SystemConstants;
@@ -72,7 +73,7 @@ public class BlogController {
     @GetMapping("/of/user")
     public Result queryBlogById(@RequestParam(value = "current", defaultValue = "1") Integer current, @RequestParam("id") Long id) {
 /*        LambdaQueryWrapper<Blog> qw=new LambdaQueryWrapper<>();
-        qw.eq(Blog::getId,id);
+        qw.eq(Blog::getUserId,id);
         Page<Blog> p = new Page<>(current,MAX_PAGE_SIZE);
         blogService.page(p,qw);
         return Result.success(p.getRecords());*/

@@ -88,9 +88,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String token = UUID.randomUUID().toString();
         //DTO（数据传输对象）数据模型转换
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
-        //？
-        Map<String, Object> userMap = BeanUtil.beanToMap(userDTO,new HashMap<>(), CopyOptions.create()
-                .setFieldValueEditor((fieldName,fieldValue)->fieldValue.toString()));
+        Map<String, Object> userMap = BeanUtil.beanToMap(userDTO,new HashMap<>()
+                ,CopyOptions.create().setFieldValueEditor((fieldName,fieldValue)->fieldValue.toString()));
         //存入redis
         stringRedisTemplate.opsForHash().putAll(LOGIN_TOKEN+token,userMap);
         //设置有效期

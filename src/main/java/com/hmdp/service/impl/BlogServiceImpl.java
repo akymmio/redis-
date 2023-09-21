@@ -129,7 +129,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         if(set==null || set.isEmpty()) return Result.success(Collections.emptyList());
         //解析id，String->Long
         List<Long> ids = set.stream().map(Long::valueOf).collect(Collectors.toList());
-        //更具id查询用户
+        //根据id查询用户
         List<User> list = userService.query().in("id", ids).last("order by id desc").list();
         //转化，User->UserDTO
         List<UserDTO> userDTOs = list.stream()

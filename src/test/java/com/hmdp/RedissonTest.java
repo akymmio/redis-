@@ -59,4 +59,5 @@ class RedissonTest {
             lock.unlock();
         }
     }
+
 }
