@@ -28,11 +28,9 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
-    //验证
+    //验证token
     @Override
     public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
-        HttpSession session = request.getSession();
-        //Object user = session.getAttribute("user");
 
         //获取请求头中的token
         String token = request.getHeader("authorization");

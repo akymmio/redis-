@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * redis分布式锁
+ * 项目中不使用，改用Redisson
  */
 public class RedisLock implements ILock{
 
@@ -18,6 +19,11 @@ public class RedisLock implements ILock{
     private final String lockName;
     private static final String KEY_PREFIX="lock:";
     private final String ID_PREFIX= UUID.randomUUID().toString(true)+'-';
+
+    public RedisLock(StringRedisTemplate stringRedisTemplate, String lockName) {
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.lockName = lockName;
+    }
 
     //加载lua脚本
     private static final DefaultRedisScript<Long> UNLOCK_SCRIPT;
@@ -27,15 +33,10 @@ public class RedisLock implements ILock{
         UNLOCK_SCRIPT.setResultType(Long.class);
     }
 
-    public RedisLock(StringRedisTemplate stringRedisTemplate, String lockName) {
-        this.stringRedisTemplate = stringRedisTemplate;
-        this.lockName = lockName;
-    }
-
     @Override
     public boolean tryLock(Long timeOut) {
-        //用线程id作为value,获取线程标识
-        String threadId =ID_PREFIX+String.valueOf(Thread.currentThread().getId());
+        //用线程id作为线程标识
+        String threadId =ID_PREFIX+Thread.currentThread().getId();
         Boolean res= stringRedisTemplate.opsForValue().setIfAbsent(KEY_PREFIX + lockName, threadId, timeOut, TimeUnit.SECONDS);
         return Boolean.TRUE.equals(res);//空指针拆箱，要防止指针为空
     }
@@ -45,7 +46,7 @@ public class RedisLock implements ILock{
        //调用lua脚本
        stringRedisTemplate.execute(UNLOCK_SCRIPT
                ,Collections.singletonList(KEY_PREFIX + lockName)
-               ,Thread.currentThread().getId()
+               ,ID_PREFIX+Thread.currentThread().getId()
        );
    }
 }

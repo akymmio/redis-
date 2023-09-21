@@ -48,23 +48,4 @@ public class ShopTypeServiceImpl extends ServiceImpl<ShopTypeMapper, ShopType> i
         stringRedisTemplate.opsForValue().set(LIST_SHOP_KEY,JSONUtil.toJsonStr(shopList));
         return Result.success(shopList);
     }
-//    @Override
-//    public Result queryShopList() {
-//        // 1. 从redis中查询商铺类型列表
-//        String jsonArray = stringRedisTemplate.opsForValue().get("shop-type");
-//        // json转list
-//        List<ShopType> jsonList = JSONUtil.toList(jsonArray,ShopType.class);
-//        System.out.println("json"+jsonList);
-//        // 2. 命中，返回redis中商铺类型信息
-//        if (!CollectionUtils.isEmpty(jsonList)) {
-//            return Result.success(jsonList);
-//        }
-//        // 3. 未命中，从数据库中查询商铺类型,并根据sort排序
-//        List<ShopType> shopTypesByMysql = query().orderByAsc("sort").list();
-//        System.out.println("mysql"+shopTypesByMysql);
-//        // 4. 将商铺类型存入到redis中
-//        stringRedisTemplate.opsForValue().set("shop-type",JSONUtil.toJsonStr(shopTypesByMysql));
-//        // 5. 返回数据库中商铺类型信息
-//        return Result.success(shopTypesByMysql);
-//    }
 }

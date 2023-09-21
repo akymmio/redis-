@@ -15,7 +15,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
-
         //判断ThreadHolder中有无用户
         if(UserHolder.getUser()==null){
             response.setStatus(401);

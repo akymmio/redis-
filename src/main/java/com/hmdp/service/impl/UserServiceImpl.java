@@ -46,14 +46,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if(RegexUtils.isPhoneInvalid(phone)){
             return Result.fail("手机号格式错误");
         }
-        //生成验证码
+        //生成6位随机验证码
         String code= RandomUtil.randomNumbers(6);
 
         //保存验证码到redis
         stringRedisTemplate.opsForValue().set(LOGIN_CODE_PREFIX+phone,code,LOGIN_CODE_TTL, TimeUnit.MINUTES);//设置验证码时效为2分钟
         //发送验证码
         log("验证码：{}",code);
-
         return Result.success();
     }
 
@@ -65,7 +64,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("手机号格式错误");
         }
         String s = stringRedisTemplate.opsForValue().get(LOGIN_CODE_PREFIX + phone);
-
         String loginCode = loginForm.getCode();
         if(loginCode==null || !loginCode.equals(s)){
             return Result.fail("验证码错误");

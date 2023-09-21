@@ -27,7 +27,6 @@ public class CacheUtils {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
-
     /**
      * 存入redis
      * @param key
@@ -102,7 +101,8 @@ public class CacheUtils {
      * @return
      */
     private boolean lock(String key) {
-        Boolean b = stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 10, TimeUnit.SECONDS);//setnx
+        //setnx
+        Boolean b = stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 10, TimeUnit.SECONDS);
         return BooleanUtil.isTrue(b);//防止拆箱，空指针异常
     }
     /**
