@@ -26,14 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.hmdp.utils.RedisConstants.*;
 
-/**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
+
 @Service
 public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IShopService {
 
@@ -175,11 +168,6 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         //写入redis
         stringRedisTemplate.opsForValue().set(CACHE_SHOP_KEY + id, JSONUtil.toJsonStr(redisData));
     }*/
-
-    /**
-     * @param shop
-     * @return
-     */
 
     @Override
     @Transactional

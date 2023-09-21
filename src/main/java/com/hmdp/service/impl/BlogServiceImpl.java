@@ -26,15 +26,8 @@ import java.util.stream.Collectors;
 
 import static com.hmdp.utils.RedisConstants.BLOG_LIKED_KEY;
 import static com.hmdp.utils.RedisConstants.FOLLOW_BOX_KEY;
+import static com.hmdp.utils.SystemConstants.MAX_PAGE_SIZE;
 
-/**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IBlogService {
 
@@ -52,7 +45,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         // 根据用户查询
         Page<Blog> page = query()
                 .orderByDesc("liked")
-                .page(new Page<>(current, SystemConstants.MAX_PAGE_SIZE));
+                .page(new Page<>(current,MAX_PAGE_SIZE));
         // 获取当前页数据
         List<Blog> records = page.getRecords();
         // 查询用户
@@ -78,11 +71,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
     /**
      * 是否被点赞
-     * @param blog
      */
     private void isBlogLiked(Blog blog) {
         UserDTO user = UserHolder.getUser();
-        //用户为点赞，无须查询是否点赞
         if(user==null) return;
         Long userId =user.getId();
         //判断当前用户是否点赞
@@ -93,8 +84,6 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
     /**
      * 点赞和取消赞功能
-     * @param id
-     * @return
      */
     @Override
     public Result likeBlog(Long id) {
@@ -120,7 +109,11 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         return Result.success();
     }
 
-    //?
+    /**
+     * 点赞列表
+     * @param id
+     * @return
+     */
     @Override
     public Result queryBlogLikes(Long id) {
         String key=BLOG_LIKED_KEY+id;

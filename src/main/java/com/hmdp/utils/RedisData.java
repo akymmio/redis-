@@ -7,7 +7,9 @@ import java.time.LocalDateTime;
 
 @Data
 public class RedisData{
-    private LocalDateTime expireTime;//逻辑过期时间
+    //逻辑过期时间
+    private LocalDateTime expireTime;
+    //存储数据
     @Getter
-    private Object data;//存储数据
+    private Object data;
 }
