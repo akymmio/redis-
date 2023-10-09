@@ -79,7 +79,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                     }
                     //下单操作
                     createOrder(list);
-                } catch (Exception e) {
+                } catch (RuntimeException e) {
                     log.error("处理订单异常",e);
                     //异常消息
                     handlePendingList();
@@ -104,7 +104,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                 }
                 //下单操作
                createOrder(list);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error("处理pending-list订单异常",e);
                 try {
                     Thread.sleep(20);
@@ -147,7 +147,32 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             //释放锁
             lock.unlock();
         }
+    }
 
+    @Transactional
+    public void  createVoucherOrder(VoucherOrder voucherOrder) {
+        //查询订单
+        Long userId = voucherOrder.getUserId();
+        //Long userId = UserHolder.getUser().getId();
+        //同一个用户加一把锁,根据id的值来锁定，但是userId每次都不一样，需要转为string
+        Long count = query().eq("user_id", userId).eq("voucher_id", voucherOrder.getVoucherId()).count();
+        //是否存在
+        if (count > 0) {
+            log.error("同一用户只能下一单");
+            return ;
+        }
+        //库存减少(手写sql)
+        boolean success = iSeckillVoucherService.update()
+                .setSql("stock=stock-1")
+                .eq("voucher_id", voucherOrder.getVoucherId())
+                .gt("stock", 0)
+                .update();//？
+        if (!success) {
+            //扣减失败
+            log.error("下单失败,库存不足");
+            return ;
+        }
+        save(voucherOrder);
     }
 
     private IVoucherOrderService proxy;
@@ -175,31 +200,5 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         proxy =(IVoucherOrderService) AopContext.currentProxy();
         //返回订单id
         return Result.success(orderId);
-    }
-
-    @Transactional
-    public void  createVoucherOrder(VoucherOrder voucherOrder) {
-        //查询订单
-        Long userId = voucherOrder.getUserId();
-        //Long userId = UserHolder.getUser().getId();
-        //同一个用户加一把锁,根据id的值来锁定，但是userId每次都不一样，需要转为string
-        Long count = query().eq("user_id", userId).eq("voucher_id", voucherOrder.getVoucherId()).count();
-        //是否存在
-        if (count > 0) {
-            log.error("同一用户只能下一单");
-            return ;
-        }
-        //库存减少(手写sql)
-        boolean success = iSeckillVoucherService.update()
-                .setSql("stock=stock-1")
-                .eq("voucher_id", voucherOrder.getVoucherId())
-                .gt("stock", 0)
-                .update();//？
-        if (!success) {
-            //扣减失败
-            log.error("下单失败,库存不足");
-            return ;
-        }
-        save(voucherOrder);
     }
 }

@@ -20,6 +20,7 @@ public class RedisConstants {
     public static final String SECKILL_STOCK_KEY="seckill:stock:";//秒杀卷key
     public static final String BLOG_LIKED_KEY="blog:liked:";//博客点赞key
     public static final String FOLLOW_BOX_KEY="follow:box:";//用户收件箱key
+    public static final String SHOP_GEO_KEY="shop:geo:";//用户收件箱key
 
 
 
