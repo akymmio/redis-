@@ -27,6 +27,6 @@ end
 --扣减库存，下单
 redis.call('incrby',stockKey,-1)
 redis.call('sadd',orderKey,userId)
---发送到消息队列
+--发送到
 redis.call('xadd','stream.orders','*','userId',userId,'voucherId',voucherId,'id',orderId)
 return 0

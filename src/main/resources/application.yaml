@@ -26,6 +26,6 @@ mybatis-plus:
   mapper-locations: mapper/*.xml
 logging:
   level:
-    com.hmdp: debug
+    com.rrdp: debug
 
 
